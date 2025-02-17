@@ -3,5 +3,16 @@ name = "rudo"
 version = "0.1.0"
 edition = "2021"
 
+[lib]
+name = "rudo"
+path = "src/lib/lib.rs"
+
+[[bin]]
+name = "rudo"
+path = "src/bin/cli/main.rs"
+
 [dependencies]
+anyhow = { version = "1.0.95" }
+automerge = { version = "0.6.0" }
 clap = { version = "4.5.29", features = ["derive"] }
+uuid = { version = "1.13.1", features = ["v4", "fast-rng"] }
