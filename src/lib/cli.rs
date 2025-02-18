@@ -1,3 +1,4 @@
+use crate::store::Store;
 use clap::{Parser, Subcommand};
 
 pub mod handlers;
@@ -24,30 +25,37 @@ enum Commands {
 }
 
 pub struct Cli {
+    store: Store,
     args: Args,
 }
 
 impl Cli {
     pub fn new() -> Self {
+        let db_path = "db.json";
+        let mut store = Store::new(db_path).unwrap();
+        if std::path::Path::new(db_path).exists() {
+            store.load().unwrap();
+        }
+
         let args = Args::parse();
-        Self { args }
+        Self { args, store }
     }
 
-    pub fn run(&self) -> anyhow::Result<()> {
+    pub fn run(&mut self) -> anyhow::Result<()> {
         match &self.args.command {
-            Commands::Add { title } => handlers::add(title),
-            Commands::List => handlers::list(),
+            Commands::Add { title } => handlers::add(&mut self.store, title),
+            Commands::List => handlers::list(&mut self.store),
             Commands::Do { id } => {
                 let id = id.parse::<u64>()?;
-                handlers::do_task(id)
+                handlers::do_task(&mut self.store, id)
             }
             Commands::Undo { id } => {
                 let id = id.parse::<u64>()?;
-                handlers::undo_task(id)
+                handlers::undo_task(&mut self.store, id)
             }
             Commands::Delete { id } => {
                 let id = id.parse::<u64>()?;
-                handlers::delete_task(id)
+                handlers::delete_task(&mut self.store, id)
             }
         }
     }

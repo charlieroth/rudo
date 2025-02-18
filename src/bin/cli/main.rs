@@ -1,6 +1,6 @@
-use crate::cli::Cli;
+use rudo::cli::Cli;
 
 fn main() {
-    let cli = Cli::new();
+    let mut cli = Cli::new();
     cli.run().unwrap();
 }
