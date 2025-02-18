@@ -26,8 +26,7 @@ impl Store {
 
     pub fn add_task(&mut self, title: &str) -> anyhow::Result<()> {
         let task = Task::new(title);
-        let tasks = self.doc.get(automerge::ROOT, "tasks")?;
-        tasks.insert_object(&tasks, task);
+        let task_value = Value::from(task);
         Ok(())
     }
 }
